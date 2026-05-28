@@ -7,14 +7,13 @@ A research repository for the wheeled Cling robot — a 3-wheel-driving, 3-wheel
 ```
 wheeled-cling/
 ├── kinematics/                  MATLAB inverse kinematics script
-└── ros2_wheeled_cling/
-    └── robot_3d3s/              ROS 2 package (URDF, simulation, control, navigation)
-        ├── config/              RViz configs, controller params, nav2 params
-        ├── launch/              Launch files for every simulation mode
-        ├── meshes/              STL mesh files for all robot links
-        ├── scripts/             Python ROS 2 nodes
-        ├── urdf/                Robot URDF description
-        └── worlds/              Gazebo world file
+└── robot_3d3s/              ROS 2 package (URDF, simulation, control, navigation)
+    ├── config/              RViz configs, controller params, nav2 params
+    ├── launch/              Launch files for every simulation mode
+    ├── meshes/              STL mesh files for all robot links
+    ├── scripts/             Python ROS 2 nodes
+    ├── urdf/                Robot URDF description
+    └── worlds/              Gazebo world file
 ```
 
 ---
