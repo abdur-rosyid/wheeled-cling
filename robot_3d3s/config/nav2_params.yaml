@@ -142,7 +142,11 @@ local_costmap:
       height: 4
       resolution: 0.05
       robot_radius: 0.45
-      plugins: []                  # no sensor — empty costmap for demo
+      plugins: ["inflation_layer"]     # no sensor; keep one valid plugin for Jazzy parameter typing
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.55
       always_send_full_costmap: true
 
 global_costmap:
@@ -159,7 +163,11 @@ global_costmap:
       height: 20
       origin_x: -10.0
       origin_y: -10.0
-      plugins: []                  # no sensor — empty costmap for demo
+      plugins: ["inflation_layer"]     # no sensor; keep one valid plugin for Jazzy parameter typing
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.55
       always_send_full_costmap: true
 
 planner_server:
@@ -250,7 +258,9 @@ route_server:
     boundary_radius_to_achieve_node: 1.0
     radius_to_achieve_node: 2.0
     smooth_corners: true
-    operations: []
+    operations: ["AdjustSpeedLimit"]
+    AdjustSpeedLimit:
+      plugin: "nav2_route::AdjustSpeedLimit"
     edge_cost_functions: ["DistanceScorer"]
     DistanceScorer:
       plugin: "nav2_route::DistanceScorer"
@@ -268,7 +278,21 @@ docking_server:
     fixed_frame: "odom"
     dock_backwards: false
     dock_prestaging_tolerance: 0.5
-    dock_plugins: []
+    dock_plugins: ["simple_dock"]
+    simple_dock:
+      plugin: "opennav_docking::SimpleNonChargingDock"
+      use_external_detection_pose: false
+      use_battery_status: false
+      use_stall_detection: false
+      docking_threshold: 0.05
+      staging_x_offset: -0.7
+      staging_yaw_offset: 0.0
+    docks: ["demo_dock"]
+    demo_dock:
+      type: "simple_dock"
+      frame: "odom"
+      pose: [0.0, 0.0, 0.0]
+      id: "demo_dock"
     controller:
       k_phi: 3.0
       k_delta: 2.0
