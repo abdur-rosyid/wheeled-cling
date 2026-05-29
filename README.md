@@ -62,7 +62,7 @@ mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 git clone https://github.com/KU-AIR-Lab/wheeled-cling.git
 cd ~/ros2_ws
-colcon build --packages-select robot_3d3s
+colcon build --packages-select robot_3d3s swerve_controller swerve_hardware test_swerve_control
 source install/setup.bash
 ```
 
