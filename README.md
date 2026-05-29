@@ -6,14 +6,18 @@ A research repository for the wheeled Cling robot — a 3-wheel-driving, 3-wheel
 
 ```
 wheeled-cling/
-├── kinematics/              MATLAB inverse kinematics script
-└── robot_3d3s/              ROS 2 package (URDF, simulation, control, navigation)
-    ├── config/              RViz configs, controller params, nav2 params
-    ├── launch/              Launch files for every simulation mode
-    ├── meshes/              STL mesh files for all robot links
-    ├── scripts/             Python ROS 2 nodes
-    ├── urdf/                Robot URDF description
-    └── worlds/              Gazebo world file
+├── kinematics/                  MATLAB inverse kinematics script
+└── robot_3d3s/                  ROS 2 package for the 3D3S robot (URDF, simulation, control, navigation)
+    ├── config/                  RViz configs, controller params, nav2 params
+    ├── launch/                  Launch files for every simulation mode
+    ├── meshes/                  STL mesh files for all robot links
+    ├── scripts/                 Python ROS 2 nodes
+    ├── urdf/                    Robot URDF description
+    └── worlds/                  Gazebo world file
+└── swerve_3d3s_controller/      ROS 2 package for 3D3S swerve controller
+    ├── swerve_controller/       3D3S swerve controller node
+    ├── swerve_hardware/         3D3S swerve controller hardware interface
+    └── test_swerve_control/     Simple test nodes for the 3D3S controller
 ```
 
 ---
@@ -51,11 +55,12 @@ sudo apt install \
 ---
 
 ## Build
+After cloning and before building, make sure that all the Python node files have executable permission. If not, perform chmod +x to them.
 
 ```bash
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
-git clone https://github.com/bushanovy/wheeled-cling.git
+git clone https://github.com/KU-AIR-Lab/wheeled-cling.git
 cd ~/ros2_ws
 colcon build --packages-select robot_3d3s
 source install/setup.bash
@@ -78,16 +83,28 @@ Use the joint sliders to move each steering/wheel joint manually.
 
 Cycles through Rotate CW/CCW → Forward → Backward → Slide Left/Right automatically.
 
+Using separate steering and wheel controllers:
 ```bash
 ros2 launch robot_3d3s motion_test.launch.py
+```
+
+Using swerve controller:
+```bash
+ros2 launch robot_3d3s motion_test_swerve.launch.py
 ```
 
 ---
 
 ### 3. Gazebo simulation (physics)
 
+Using separate steering and wheel controllers:
 ```bash
 ros2 launch robot_3d3s gazebo.launch.py
+```
+
+Using swerve controller:
+```bash
+ros2 launch robot_3d3s gazebo_swerve.launch.py
 ```
 
 Wait ~15 s for controllers to spawn, then the robot is ready.
@@ -97,13 +114,30 @@ Wait ~15 s for controllers to spawn, then the robot is ready.
 ### 4. Keyboard teleoperation
 
 **RViz mode:**
+
+Using separate steering and wheel controllers:
 ```bash
 ros2 launch robot_3d3s teleop.launch.py
 ```
 
-**Gazebo mode** (run gazebo.launch.py first, then in a second terminal):
+Using swerve controller:
+```bash
+ros2 launch robot_3d3s teleop_swerve.launch.py
+```
+
+**Gazebo mode** 
+
+Using separate steering and wheel controllers:
+
+Run gazebo.launch.py first, then in a second terminal:
 ```bash
 ros2 run robot_3d3s teleop_keyboard.py --ros-args -p gazebo:=true
+```
+Using swerve controller:
+
+Run gazebo_swerve.launch.py first, then in a second terminal:
+```bash
+ros2 run robot_3d3s teleop_keyboard_swerve.py --ros-args -p gazebo:=true
 ```
 
 | Key | Motion |
@@ -121,13 +155,26 @@ ros2 run robot_3d3s teleop_keyboard.py --ros-args -p gazebo:=true
 ### 5. Autonomous navigation (Nav2)
 
 **RViz only (no physics):**
+
+Using separate steering and wheel controllers:
 ```bash
 ros2 launch robot_3d3s nav2.launch.py
 ```
+Using swerve controller:
+```bash
+ros2 launch robot_3d3s nav2_swerve.launch.py
+```
 
-**Gazebo + Nav2:**
+**RViz + Gazebo:**
+Here Gazebo will be a co-simulation along with Rviz.
+
+Using separate steering and wheel controllers:
 ```bash
 ros2 launch robot_3d3s nav2.launch.py gazebo:=true
+```
+Using swerve controller:
+```bash
+ros2 launch robot_3d3s nav2_swerve.launch.py gazebo:=true
 ```
 
 Once RViz opens, click **"2D Goal Pose"** and click anywhere on the grid.  
@@ -144,6 +191,8 @@ Nav2 plans a path and the robot drives autonomously using the MPPI holonomic con
 | `teleop_keyboard.py` | Keyboard teleoperation with smart-flip IK |
 | `cmd_vel_to_wheels.py` | Converts `/cmd_vel` Twist → steering + wheel commands |
 | `odom_node.py` | Dead-reckoning odometry from `/joint_states` → `/odom` + TF |
+
+Scripts with _swerve filenames indicate similar codes implementing swerve controller instead of separate steering and wheel controllers.
 
 ---
 
@@ -175,4 +224,6 @@ See `kinematics/InverseKinematics.m` for the MATLAB reference implementation.
 ## Author
 
 Yersaiyn Bushanovy — Nazarbayev University  
+Abdur Rosyid
+
 KU AIR Lab
